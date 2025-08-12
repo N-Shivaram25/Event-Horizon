@@ -18,16 +18,27 @@ interface ThemeProviderProps {
 export function ThemeProvider({ children, defaultTheme = "light" }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== "undefined") {
-      return (localStorage.getItem("theme") as Theme) || defaultTheme;
+      try {
+        return (window.localStorage.getItem("theme") as Theme) || defaultTheme;
+      } catch {
+        // Ignore storage access errors (e.g., disabled cookies or SSR)
+      }
     }
     return defaultTheme;
   });
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
     root.classList.add(theme);
-    localStorage.setItem("theme", theme);
+
+    try {
+      window.localStorage.setItem("theme", theme);
+    } catch {
+      // Ignore storage write errors (private mode, disabled storage, etc.)
+    }
   }, [theme]);
 
   const toggleTheme = () => {

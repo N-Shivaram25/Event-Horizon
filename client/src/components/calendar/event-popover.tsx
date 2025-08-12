@@ -79,8 +79,14 @@ export default function EventPopover({ event, position, onClose, onEdit }: Event
       transition={{ duration: 0.2 }}
       className="fixed z-50"
       style={{
-        left: Math.min(position.x, window.innerWidth - 320),
-        top: Math.min(position.y, window.innerHeight - 200),
+        left: Math.min(
+          position.x,
+          (typeof window !== "undefined" ? window.innerWidth : 0) - 320
+        ),
+        top: Math.min(
+          position.y,
+          (typeof window !== "undefined" ? window.innerHeight : 0) - 200
+        ),
       }}
     >
       <Card className="w-80 shadow-xl glass border-border">
